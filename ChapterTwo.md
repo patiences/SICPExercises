@@ -84,3 +84,38 @@
          (cons (f (car tree)) 
                (tree-map f (cdr tree)))]))
 ```
+**2.33**
+
+```
+(define (map p sequence)
+  (foldr (lambda (x y) (cons (p x) y)) empty sequence))
+  
+(define (append seq1 seq2)
+  (foldr cons seq2 seq1))
+  
+(define (length sequence)
+  (foldr (λ (x y) (+ 1 y)) 0 sequence))
+```
+
+**2.35**
+
+```
+(define (count-leaves tree)
+  (foldr + 0 (map (λ (x)
+                    (cond [(empty? x) empty]
+                          [(list? x)
+                           (count-leaves x)]
+                          [else 1])) tree)))
+
+(count-leaves (list (list 1 2 3) 4 (list 5) (list (list 6 7) 8)))
+```
+
+**2.36**
+
+```
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      empty 
+      (cons (foldr op init (map (λ (seq) (car seq)) seqs))
+            (accumulate-n op init (map (λ (seq) (cdr seq)) seqs)))))
+```
