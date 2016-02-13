@@ -36,3 +36,51 @@
          (cons (car lox)
                (fringe (cdr lox)))]))
 ```
+**2.30**
+
+```
+(check-expect (square-tree 
+               (list (list 1 2) 3 (list 4 5 6) (list (list 7) 8)))
+              (list (list 1 4) 9 (list 16 25 36) (list (list 49) 64)))
+
+#;
+(define (square-tree t)
+  (cond [(empty? t) empty]
+        [else
+         (cons (fn-for-node (car t))
+               (square-tree (cdr t)))]))
+
+(define (fn-for-node n)
+  (cond [(list? n) (square-tree n)]
+        [else
+         (square1 n)]))
+
+(define (square1 x)
+  (* x x))
+
+#;
+(define (square-tree t)
+  (map (λ (n) 
+         (cond 
+           [(empty? n) empty]
+           [(not (list? n))
+            (square n)]
+           [else
+            (square-tree n)]))
+       t)) 
+```
+
+**2.31**
+
+```
+(define (square-tree tree) (tree-map square1 tree))
+
+(define (tree-map f tree)
+  (cond [(empty? tree) empty]
+        [(list? (car tree)) 
+         (cons (tree-map f (car tree))
+               (tree-map f (cdr tree)))]
+        [else
+         (cons (f (car tree)) 
+               (tree-map f (cdr tree)))]))
+```
