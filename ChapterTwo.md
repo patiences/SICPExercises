@@ -174,3 +174,17 @@
                  (append (list 1) (encode-symbol sym (tree-node1 tree)))
                  false))]))
 ```
+
+**2.75**
+
+```
+(define (make-from-mag-ang r a)
+  (local [(define (dispatch op)
+            (cond [(equal? op 'real-part) (* r (cos a))]
+                  [(equal? op 'imag-part) (* r (sin a))]
+                  [(equal? op 'magnitude) r]
+                  [(equal? op 'angle) a]
+                  [else
+                   (error "Unknown op -- MAKE-FROM-REAL-IMAG" op)]))]
+    dispatch))
+```
