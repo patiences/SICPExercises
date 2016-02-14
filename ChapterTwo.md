@@ -119,3 +119,49 @@
       (cons (foldr op init (map (λ (seq) (car seq)) seqs))
             (accumulate-n op init (map (λ (seq) (cdr seq)) seqs)))))
 ```
+**2.59**
+
+```
+(define (union-set set1 set2)
+    (cond [(null? set1) set2]
+          [(null? set2) set1]
+          [else 
+           (if (member? (car set1) set2)
+               (union-set (cdr set1) set2)
+               (cons (car set1) (union-set (cdr set1) set2)))]))
+```
+
+**2.62**
+
+```
+(define (union-set set1 set2)
+  (cond [(null? set1) set2]
+        [(null? set2) set1]
+        [(= (car set1) (car set2))
+         (cons (car set1) (union-set (cdr set1) (cdr set2)))]
+        [(< (car set1) (car set2)) 
+         (cons (car set1) (union-set (cdr set1) set2))]
+        [(> (car set1) (car set2))
+         (cons (car set2) (union-set set1 (cdr set2)))]))
+```
+
+**2.68**
+
+```
+;; Symbol Tree -> (listof Natural) 
+
+(check-expect (encode-symbol 'A HT1) (list 0))
+(check-expect (encode-symbol 'D HT1) (list 1 1 0))
+
+(define (encode-symbol sym tree)
+  (cond [(leaf? tree) 
+         (if (equal? sym (leaf-symb tree))
+             empty
+             false)]
+        [else
+         (if (not (false? (encode-symbol sym (tree-node0 tree))))
+             (append (list 0) (encode-symbol sym (tree-node0 tree)))
+             (if (not (false? (encode-symbol sym (tree-node1 tree))))
+                 (append (list 1) (encode-symbol sym (tree-node1 tree)))
+                 false))]))
+```
