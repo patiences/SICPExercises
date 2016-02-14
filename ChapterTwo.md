@@ -148,6 +148,15 @@
 **2.68**
 
 ```
+(define-struct tree (node0 node1))
+(define-struct leaf (symb wght))
+
+
+(define HT1 (make-tree (make-leaf 'A 4)
+                       (make-tree (make-leaf 'B 2)
+                                  (make-tree (make-leaf 'D 1)
+                                             (make-leaf 'C 1)))))
+                                             
 ;; Symbol Tree -> (listof Natural) 
 
 (check-expect (encode-symbol 'A HT1) (list 0))
