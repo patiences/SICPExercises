@@ -188,3 +188,47 @@
                    (error "Unknown op -- MAKE-FROM-REAL-IMAG" op)]))]
     dispatch))
 ```
+
+**2.87**
+
+```
+(define (=zero-poly? poly)
+  (local [(define (zero-terms? termlist)
+            (or (null? termlist) 
+                (and (=zero? (coeff (car termlist)))
+                     (zero-terms? (cdr termlist)))))]
+    (zero-terms? (termlist poly))))
+
+(put '=zero? 'polynomial =zero-poly?)
+```
+
+**2.88**
+
+```
+(define (sub-poly p1 p2)
+  (if (same-variable? (variable p1) (variable p2))
+      (make-poly (variable p1)
+                 (sub-terms (term-list p1)
+                            (term-list p2)))
+      (error "Polys not in the same var -- SUB-POLY"
+             (list p1 p2))))
+
+(define (sub-terms l1 l2)
+  (cond [(empty-termlist? l1) (map neg l2)]
+        [(empty-termlist? l2) l1]
+        [else 
+         (let ((t1 (first-term l1))
+               (t2 (first-term l2)))
+           (cond [(> (order t1) (order t2))
+                  (adjoin-term t1 (sub-terms (rest-terms l1) l2))]
+                 [(< (order t1) (order t2))
+                  (adjoin-term (neg t2) (sub-terms l1 (rest-terms t2)))]
+                 [else 
+                  (adjoin-term 
+                   (make-term (order t1)
+                              (sub (coeff t1) (coeff t2)))
+                   (sub-terms (rest l1) (rest l2)))]))]))
+
+(define (neg x)
+  (apply-generic 'sub 0 x))
+```
